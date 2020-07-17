@@ -1,0 +1,128 @@
+/*
+Agasha Ratam
+Version Jul 17, 2020
+
+https://yaleidentity.yale.edu/web
+Color 1: #f9f9f9 WHITE
+Color 2: #222222 BLACK
+Color 3: #7fbf7b BLUE
+Color 4: #dddddd LIGHT GRAY
+Color 5: #978d85
+Color 6: #af8dc3 ORANGE
+*/
+
+body {
+	background-color: #f9f9f9;
+	margin: 0px;	
+}
+
+.color1 {
+	fill: #f9f9f9;
+}
+
+.color3 {
+	fill: #7fbf7b;
+}
+
+.color4 {
+	fill: #dddddd;
+}
+
+.color6 {
+	fill: #af8dc3;
+}
+
+.deontological {
+	fill: #af8dc3;
+	color: #af8dc3;
+}
+.utilitarian {
+	fill: #7fbf7b;
+	color: #7fbf7b;
+}
+
+#page-title {
+	font-family: Times New Roman, sans;
+	font-size: 24px;
+	stroke: #f9f9f9;
+	fill: #f9f9f9;
+}
+
+rect {
+	fill: #444444;
+}
+
+rect.dilemma {
+	stroke: none;
+	fill: #dddddd;
+}
+rect.dilemma.selected {
+	fill: #444444;
+}
+text.dilemma {
+	font-size: 15px;
+	stroke: #222222;
+	fill: #222222;
+	stroke-width: 0.5px;
+}
+text.dilemma.selected {
+	stroke: #f9f9f9;
+	fill: #f9f9f9;
+}
+
+.stance {
+	font-size: 22px;
+	stroke: 0.6px;
+}
+
+line {
+	stroke: #dddddd;
+	opacity: 0.5;
+}
+
+#line-labels {
+	stroke: #dddddd;
+	fill: #dddddd;
+
+}	
+
+
+text.row-plot {
+	stroke: #222222;
+	fill: #222222;
+	stroke-width: 0.5px;
+}
+rect.row-plot {
+	stroke: #222222;
+	stroke-width: 0.3px;
+}
+
+#tooltip-box {
+	stroke: #222222;
+	fill: #f9f9f9;
+}
+
+#tooltip {
+	font-size: 12px;
+}
+
+.tooltip {
+	font-size: 16px;
+	stroke: #f9f9f9;
+	fill: #f9f9f9;
+}
+
+.tooltipSmall {
+	font-size: 11px;
+	stroke: #f9f9f9;
+	fill: #f9f9f9;
+}
+
+
+.invisible {
+	opacity: 0;
+}
+
+b {
+	font-size: 13px;
+}
