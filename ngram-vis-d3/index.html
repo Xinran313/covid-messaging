@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
 Agasha Ratam
-Version Jul 6, 2020
+Version Jul 20, 2020
 -->
 <html>
 	<head>
@@ -332,7 +332,7 @@ Version Jul 6, 2020
 								res = ""
 								dataset.forEach(function(d) {
 									if (d.ngram === word && d.dExample1 != "") {
-										res = "\"" + d.dExample1.replaceAll("<b>", "<b class=\"deontological\">") + "\"";
+										res = "\"" + d.dExample1.replace("<b>", "<b class=\"deontological\">") + "\"";
 									}
 								});
 
@@ -376,7 +376,7 @@ Version Jul 6, 2020
 								res = ""
 								dataset.forEach(function(d) {
 									if (d.ngram === word && d.dExample2 != "") {
-										res = "\"" + d.dExample2.replaceAll("<b>", "<b class=\"deontological\">") + "\"";
+										res = "\"" + d.dExample2.replace("<b>", "<b class=\"deontological\">") + "\"";
 									}
 								});
 
@@ -420,7 +420,7 @@ Version Jul 6, 2020
 								res = ""
 								dataset.forEach(function(d) {
 									if (d.ngram === word && d.dExample3 != "") {
-										res = "\"" + d.dExample3.replaceAll("<b>", "<b class=\"deontological\">") + "\"";
+										res = "\"" + d.dExample3.replace("<b>", "<b class=\"deontological\">") + "\"";
 									}
 								});
 
@@ -522,7 +522,7 @@ Version Jul 6, 2020
 								res = ""
 								dataset.forEach(function(d) {
 									if (d.ngram === word && d.uExample1 != "") {
-										res = "\"" + d.uExample1.replaceAll("<b>", "<b class=\"utilitarian\">") + "\"";
+										res = "\"" + d.uExample1.replace("<b>", "<b class=\"utilitarian\">") + "\"";
 									}
 								});
 
@@ -568,7 +568,7 @@ Version Jul 6, 2020
 								res = ""
 								dataset.forEach(function(d) {
 									if (d.ngram === word && d.uExample2 != "") {
-										res = "\"" + d.uExample2.replaceAll("<b>", "<b class=\"utilitarian\">") + "\"";
+										res = "\"" + d.uExample2.replace("<b>", "<b class=\"utilitarian\">") + "\"";
 									}
 								});
 
@@ -614,7 +614,7 @@ Version Jul 6, 2020
 								res = ""
 								dataset.forEach(function(d) {
 									if (d.ngram === word && d.uExample3 != "") {
-										res = "\"" + d.uExample3.replaceAll("<b>", "<b class=\"utilitarian\">") + "\"";
+										res = "\"" + d.uExample3.replace("<b>", "<b class=\"utilitarian\">") + "\"";
 									}
 								});
 
