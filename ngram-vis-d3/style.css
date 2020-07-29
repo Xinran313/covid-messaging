@@ -4,32 +4,47 @@ Version Jul 17, 2020
 
 https://yaleidentity.yale.edu/web
 Color 1: #f9f9f9 WHITE
-Color 2: #222222 BLACK
-Color 3: #7fbf7b BLUE
-Color 4: #dddddd LIGHT GRAY
-Color 5: #978d85
-Color 6: #af8dc3 ORANGE
+Color 2: #444444
 */
+
+* {
+	margin: 0;
+}
 
 body {
 	background-color: #f9f9f9;
 	margin: 0px;	
 }
 
-.color1 {
+rect.skeleton {
+	stroke-width: 0px;
+	stroke: red;
+	fill: none;
+}
+
+#page-title {
+	fill: #444444;
+}
+#page-title-label {
+	font-family: Times New Roman, sans;
+	font-size: 24px;
+	stroke: #f9f9f9;
 	fill: #f9f9f9;
 }
 
-.color3 {
-	fill: #7fbf7b;
-}
-
-.color4 {
+rect.dilemma {
+	stroke-width: 1px;
+	stroke: #444444;
 	fill: #dddddd;
 }
-
-.color6 {
-	fill: #af8dc3;
+rect.dilemma.selected {
+	fill: #444444;
+}
+rect.dilemma.hover {
+	fill: #444444;
+}
+rect.clickable {
+	opacity: 0;
 }
 
 .deontological {
@@ -41,29 +56,15 @@ body {
 	color: #7fbf7b;
 }
 
-#page-title {
-	font-family: Times New Roman, sans;
-	font-size: 24px;
-	stroke: #f9f9f9;
-	fill: #f9f9f9;
-}
-
-rect {
-	fill: #444444;
-}
-
-rect.dilemma {
-	stroke: none;
-	fill: #dddddd;
-}
-rect.dilemma.selected {
-	fill: #444444;
-}
 text.dilemma {
 	font-size: 15px;
 	stroke: #222222;
 	fill: #222222;
 	stroke-width: 0.5px;
+}
+text.dilemma.hover {
+	stroke: #f9f9f9;
+	fill: #f9f9f9;
 }
 text.dilemma.selected {
 	stroke: #f9f9f9;
@@ -87,16 +88,29 @@ line {
 }	
 
 
+/* Figure: bars and labels */
+rect.row-plot {
+	stroke: #222222;
+	stroke-width: 0.3px;
+}
+rect.row-plot#mouseover {
+	stroke-width: 2px;
+}
 text.row-plot {
 	stroke: #222222;
 	fill: #222222;
 	stroke-width: 0.5px;
 }
-rect.row-plot {
-	stroke: #222222;
-	stroke-width: 0.3px;
-}
 
+
+/* Figure: tooltip */
+#background {
+	fill: black;
+	opacity: 0;
+}
+.tooltip-area {
+	opacity: 0;
+}
 #tooltip-box {
 	stroke: #222222;
 	fill: #f9f9f9;
@@ -117,7 +131,19 @@ rect.row-plot {
 	stroke: #f9f9f9;
 	fill: #f9f9f9;
 }
-
+div {
+	height: 100%;
+	overflow: auto;
+}
+p.source {
+	text-align: right;
+}
+p.gap {
+	margin: 15px;
+}
+#tooltip-area {
+	opacity: 0;
+}
 
 .invisible {
 	opacity: 0;
