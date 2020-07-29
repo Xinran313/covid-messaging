@@ -1,8 +1,0 @@
-ngram,pct_d,pct_u,d_example_1,d_person_1,d_date_1,d_example_2,d_person_2,d_date_2,d_example_3,d_person_3,d_date_3,u_example_1,u_person_1,u_date_1,u_example_2,u_person_2,u_date_2,u_example_3,u_person_3,u_date_3
-"more lives","0","14.285714285714285","","","","","","","","","","""so that <b>more lives</b> can be saved"" utilitarian; advocate ""back to normal"";","President Donald Trump","03/25/20","","","","","",""
-"lives can","0","14.285714285714285","","","","","","","","","","""so that more <b>lives can</b> be saved"" utilitarian; advocate ""back to normal"";","President Donald Trump","03/25/20","","","","","",""
-"can saved","0","14.285714285714285","","","","","","","","","","""so that more lives <b>can be saved</b>"" utilitarian; advocate ""back to normal"";","President Donald Trump","03/25/20","","","","","",""
-"saved utilitarian","0","14.285714285714285","","","","","","","","","","""so that more lives can be <b>saved"" utilitarian</b>; advocate ""back to normal"";","President Donald Trump","03/25/20","","","","","",""
-"utilitarian advocate","0","14.285714285714285","","","","","","","","","","""so that more lives can be saved"" <b>utilitarian; advocate</b> ""back to normal"";","President Donald Trump","03/25/20","","","","","",""
-"advocate back","0","14.285714285714285","","","","","","","","","","""so that more lives can be saved"" utilitarian; <b>advocate ""back</b> to normal"";","President Donald Trump","03/25/20","","","","","",""
-"back normal","0","14.285714285714285","","","","","","","","","","""so that more lives can be saved"" utilitarian; advocate ""<b>back to normal</b>"";","President Donald Trump","03/25/20","","","","","",""
