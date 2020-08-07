@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<!--
+Agasha Ratam
+Version Aug 7, 2020
+-->
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Keywords by Issue</title>
+		<script type="text/javascript" src="https://d3js.org/d3.v5.js"></script>
+		<link rel="stylesheet" href="ngrams-style.css">
+	</head>
+	<body>
+		<script type="text/javascript">
+			var classIncludes = function(str, substr) {
+				str = " " + str + " ";
+				return str.includes(" " + substr + " ");
+			}
+			var w = 1248;
+			var h = 624;
+			var pageMargin = 10;
+			var tileMarginY = 10;
+
+			var titleH = 60;
+			var dilemmasH = 60;
+			var stancesH = 40;
+
+			var figMarginX = 100;
+			var figAxisLabelGap = 15;
+			var figAxisLabelH = 20;
+			var figBarGapY = 5;
+			var figBarLabelGapX = 10;
+
+			var tooltipBoxW = 550;
+			var tooltipBoxH = 180;
+			var tooltipGapX = 10;
+			var tooltipGapY = 10;
+			var tooltipBoxPadding = 10;
+			var textTransition = 200;
+
+			var sourceGap = 20;
+			var sourcePos = 0.63;
+
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+			// Skeleton
+			skel = svg.append("g");
+
+			skel.append("rect")
+				.attr("class", "skeleton")
+				.attr("x", 0)
+				.attr("y", 0)
+				.attr("width", w)
+				.attr("height", h);
+
+			skel.append("rect")
+				.attr("class", "skeleton")
+				.attr("x", 0)
+				.attr("y", 0)
+				.attr("width", w)
+				.attr("height", titleH);
+
+			skel.append("rect")
+				.attr("class", "skeleton")
+				.attr("x", 0)
+				.attr("y", titleH + tileMarginY)
+				.attr("width", w)
+				.attr("height", dilemmasH);
+
+			skel.append("rect")
+				.attr("class", "skeleton")
+				.attr("x", 0)
+				.attr("y", titleH + dilemmasH + 2 * tileMarginY)
+				.attr("width", w)
+				.attr("height", stancesH);
+
+			skel.append("rect")
+				.attr("class", "skeleton")
+				.attr("x", 0)
+				.attr("y", titleH + dilemmasH + stancesH + 3 * tileMarginY)
+				.attr("width", w)
+				.attr("height", h - tileMarginY - (titleH + dilemmasH + stancesH + 3 * tileMarginY));
+
+	
+			// Title
+			svg.append("rect")
+				.attr("id", "page-title")
+				.attr("x", 0)
+				.attr("y", 0)
+				.attr("width", w)
+				.attr("height", titleH);
+			svg.append("text")
+				.attr("id", "page-title-label")
+				.attr("text-anchor", "middle")
+				.attr("dominant-baseline", "central")
+				.attr("x", w / 2)
+				.attr("y", titleH / 2)
+				.text("Most Frequent 2-grams by COVID-19 Dilemma");
+
+			// Dilemmas
+			svg.append("rect")
+				.attr("class", "dilemma")
+				.attr("x", 0)
+				.attr("y", titleH + tileMarginY)
+				.attr("width", w)
+				.attr("height", dilemmasH);
+
+			// Stances
+			svg.append("g")
+				.selectAll("text")
+				.data(["Deontological", "Utilitarian"])
+				.enter()
+				.append("text")
+				.attr("class", function(d, i) {
+					classes = ["stance deontological", "stance utilitarian"];
+					return classes[i];
+				})
+				.attr("text-anchor", "middle")
+				.attr("dominant-baseline", "central")
+				.attr("x", function(d, i) {
+					return w * (2 * i + 1) / 4;
+				})
+				.attr("y", titleH + dilemmasH + 2 * tileMarginY + stancesH / 2)
+				.text(function(d) {
+					return d;
+				});
+
+
+			d3.json("data.json")
+			.then(function(data) {
+				// Dilemmas
+				dilemmaLabels = ["LOCKDOWN", "VENTILATORS / MEDICAL CARE", "PPE", "TRACK AND TRACE", "VACCINE"];
+				dataNames = {
+					"LOCKDOWN": "lockdown",
+					"VENTILATORS / MEDICAL CARE": "medical_care",
+					"PPE": "ppe",
+					"TRACK AND TRACE": "trace",
+					"VACCINE": "vaccine"
+				}
+
+				svg.append("g")
+					.attr("id", "dilemmas")
+					.selectAll("rect")
+					.data(dilemmaLabels)
+					.enter()
+					.append("rect")
+					.attr("class", function(d, i) {
+						if (i == 0) {
+							return "dilemma selected";
+						}
+						else {
+							return "dilemma";
+						}
+					})
+					.attr("x", function(d, i) {
+						return w * i / dilemmaLabels.length;
+					})
+					.attr("y", titleH + tileMarginY)
+					.attr("width", w / dilemmaLabels.length)
+					.attr("height", dilemmasH)
+					.on("mouseover", function(d, i) {
+						var c = d3.select(this).attr("class");
+
+						if (c === "dilemma") {
+							d3.select(this).attr("class", "dilemma hover");
+						}
+
+						d3.select("#dilemma-labels")
+							.selectAll("text")
+							.attr("class", function(d2, i2) {
+								var c = d3.select(this).attr("class");
+								if (c === "dilemma" && i === i2) {
+									return "dilemma hover";
+								}
+								else {
+									return c;
+								}
+							})
+					})
+					.on("mouseout", function() {
+						var c = d3.select(this).attr("class")
+
+						if (c === "dilemma hover") {
+							d3.select(this).attr("class", "dilemma");
+						}
+
+						d3.select("#dilemma-labels")
+							.selectAll("text")
+							.attr("class", function() {
+								var c = d3.select(this).attr("class");
+								if (c === "dilemma hover") {
+									return "dilemma";
+								}
+								else {
+									return c;
+								}
+							})
+					})	
+					.on("click", function(d, i) {
+						ngrams = data[dataNames[dilemmaLabels[i]]];
+
+						d3.select("#dilemmas")
+							.selectAll("rect")
+							.attr("class", function(d2, i2) {
+								if (i === i2) {
+									return "dilemma selected";
+								}
+								else {
+									return "dilemma";
+								}
+							});
+
+						d3.select("#dilemma-labels")
+							.selectAll("text")
+							.attr("class", function(d2, i2) {
+								if (i === i2) {
+									return "dilemma selected";
+								}
+								else {
+									return "dilemma";
+								}
+							});
+
+						d3.select("#bar-labels")
+							.selectAll("text")
+							.data(ngrams)
+							.attr("text-anchor", function(d, i) {
+								if (d.pct_d >= d.pct_u) {
+									return "end";
+								}
+								else {
+									return "start";
+								}
+							})
+							.attr("x", function(d, i) {
+								if (d.pct_d >= d.pct_u) {
+									var tmpX = d3.select("#deon-bars")
+												.selectAll("rect")
+												.filter(function(d2, i2) {
+													return i === i2;
+												})
+												.attr("x")
+									
+									return tmpX - figBarLabelGapX;
+								}
+								else {
+									var tmpX = parseFloat(
+												d3.select("#util-bars")
+												.selectAll("rect")
+												.filter(function(d2, i2) {
+													return i === i2;
+												})
+												.attr("x"))
+
+									var tmpW = parseFloat(d3.select("#util-bars")
+												.selectAll("rect")
+												.filter(function(d2, i2) {
+													return i === i2;
+												})
+												.attr("width"))
+
+									return tmpX + tmpW + figBarLabelGapX;
+								}
+							})
+							.transition()
+							.duration(1000)
+							.attr("text-anchor", function(d) {
+								if (d.pct_d >= d.pct_u) {
+									return "end";
+								}
+								else {
+									return "start";
+								}
+							})
+							.attr("x", function(d) {
+								if (d.pct_d >= d.pct_u) {
+									return xScale(-d.pct_d) - figBarLabelGapX;
+								}
+								else {
+									return xScale(d.pct_u) + figBarLabelGapX;
+								}
+							})
+							.attr("y", function(d, i) {
+								return yScale(i) + (yScale(1) - yScale(0)) / 2;
+							})
+							.text(function(d) {
+								return d.ngram;
+							});
+
+
+						d3.select("#deon-bars")
+							.selectAll("rect")
+							.data(ngrams)
+							.transition()
+							.duration(1000)
+							.attr("x", function(d) {
+								return xScale(-d.pct_d);
+							})
+							.attr("width", function(d) {
+								return xScale(d.pct_d) - xScale(0);
+							})
+							.attr("ngram", function(d) {
+								return d.ngram;
+							})
+
+						d3.select("#util-bars")
+							.selectAll("rect")
+							.data(ngrams)
+							.transition()
+							.duration(1000)
+							.attr("width", function(d) {
+								return xScale(d.pct_u) - xScale(0);
+							})
+							.attr("ngram", function(d) {
+								return d.ngram;
+							})
+					});
+
+				svg.append("g")
+					.attr("id", "dilemma-labels")
+					.selectAll("text")
+					.data(dilemmaLabels)
+					.enter()
+					.append("text")
+					.attr("class", function(d, i) {
+						if (i == 0) {
+							return "dilemma selected";
+						}
+						else {
+							return "dilemma";
+						}
+					})
+					.style("pointer-events", "none")
+					.attr("text-anchor", "middle")
+					.attr("dominant-baseline", "central")
+					.attr("x", function(d, i) {
+						return w * (i + 0.5) / dilemmaLabels.length;
+					})
+					.attr("y", titleH + tileMarginY + dilemmasH / 2)
+					.text(function(d) {
+						return d;
+					})
+				
+
+				// Max percentage
+				var maxPct = 0;
+
+				dilemmaNames = Object.keys(data);
+				dilemmaNames.forEach(function(dilemma) {
+					ngrams = data[dilemma];
+					dilemma_max = d3.max(ngrams.map(function(ng) {
+						return d3.max([ng.pct_d, ng.pct_u]);	
+					}));
+					maxPct = d3.max([maxPct, dilemma_max]);
+				});
+
+				// Scales
+				ngrams = data[dilemmaNames[0]];
+
+				var xScale = d3.scaleLinear()
+								.domain([-3, 3])
+								.rangeRound([pageMargin + figMarginX, w - pageMargin - figMarginX]);
+				var yScale = d3.scaleLinear()
+								.domain([0, ngrams.length])
+								.rangeRound([titleH + dilemmasH + stancesH + 3 * tileMarginY, h - tileMarginY - figAxisLabelH - figAxisLabelGap]);
+
+				// Axes
+				guides = [-maxPct, -maxPct * 3/4, -maxPct / 2, -maxPct / 4, 0, maxPct / 4, maxPct / 2, maxPct * 3 / 4, maxPct];
+				guides = [-3, -2, -1, 0, 1, 2, 3];
+
+				svg.append("g")
+					.selectAll("line")
+					.data(guides)
+					.enter()
+					.append("line")
+					.attr("x1", function(d) {
+						return xScale(d);
+					})
+					.attr("x2", function(d) {
+						return xScale(d);
+					})
+					.attr("y1", yScale(0))
+					.attr("y2", yScale(ngrams.length))
+					.style("stroke", function(d, i) {
+						if (i == 3) {
+							return "#222222";
+						}
+						else {
+							return "#dddddd";
+						}
+					});
+
+				svg.append("g")
+					.attr("id", "line-labels")
+					.selectAll("text")
+					.data(guides)
+					.enter()
+					.append("text")
+					.attr("text-anchor", "middle")
+					.attr("dominant-baseline", "top")
+					.attr("x", function(d) {
+						return xScale(d);
+					})
+					.attr("y", yScale(ngrams.length) + figAxisLabelGap)
+					.text(function(d) {
+						return Math.round(Math.abs(d) * 1000) / 1000 + "%";
+					});
+
+				// Bars
+				for (side = 0; side < 2; side++) {
+					bars = svg.append("g")
+							.attr("id", function() {
+								if (side == 0) {
+									return "deon-bars";
+								}
+								else {
+									return "util-bars";
+								}
+							})
+							.selectAll("rect")
+							.data(ngrams)
+							.enter()
+							.append("rect")
+							.attr("class", function() {
+								if (side == 0) {
+									return "row-plot deontological";
+								}
+								else {
+									return "row-plot utilitarian";
+								}
+							})
+							.attr("x", function(d) {
+								if (side == 0) {
+									return xScale(-d.pct_d);
+								}
+								else {
+									return w / 2;
+								}
+							})
+							.attr("y", function(d, i) {
+								return yScale(i) + figBarGapY / 2;
+							})
+							.attr("width", function(d) {
+								if (side == 0) {
+									return xScale(d.pct_d) - xScale(0);
+								}
+								else {
+									return xScale(d.pct_u) - xScale(0);
+								}
+							})
+							.attr("height", yScale(1) - yScale(0) - figBarGapY)
+							.attr("ngram", function(d) {
+								return d.ngram;
+							})
+							.on("mouseover", function() {
+								var x = parseFloat(d3.select(this).attr("x"));
+								var y = parseFloat(d3.select(this).attr("y"));
+								var w = parseFloat(d3.select(this).attr("width"));
+								var classTag = d3.select(this).attr("class");
+	
+								d3.select(this).attr("id", "mouseover");
+								
+
+							})
+							.on("click", function(d, i) {
+								var classTag = d3.select(this).attr("class");
+								var x = parseFloat(d3.select(this).attr("x"));
+								var y = parseFloat(d3.select(this).attr("y"));
+								var rectW = parseFloat(d3.select(this).attr("width"));
+								var rectH = parseFloat(d3.select(this).attr("height"));
+
+								svg.select("#mouseover")
+									.on("mouseout", function() {	
+									})
+
+								svg.append("rect")
+									.attr("id", "background")
+									.attr("x", 0)
+									.attr("y", 0)
+									.attr("width", w)
+									.attr("height", h)
+									.on("mouseover", function() {
+										d3.selectAll("#tooltip-box")
+											.transition()
+											.duration(textTransition)
+											.attr("x", x + rectW / 2)
+											.attr("y", y)
+											.attr("width", 0)
+											.attr("height", 0)
+											.remove()
+										d3.selectAll("#tooltip").remove();
+										d3.selectAll(".tooltip-area").remove();
+										d3.selectAll("#background").remove();
+										d3.selectAll("#mouseover")
+											.on("mouseout", function() {
+												d3.select(this).attr("id", null);
+											})	
+											.attr("id", null)
+									})
+
+								svg.append("rect")
+									.attr("id", "tooltip-box")
+									.attr("x", x + rectW / 2)
+									.attr("y", y)
+									.attr("height", 0)
+									.attr("width", 0)
+									.transition()
+									.duration(textTransition)
+									.attr("x", x + rectW / 2 - tooltipBoxW / 2)
+									.attr("y", y - tooltipGapY - tooltipBoxH)
+									.attr("width", tooltipBoxW)
+									.attr("height", tooltipBoxH)
+
+								svg.append("rect")
+									.attr("class", "tooltip-area")
+									.attr("x", x)
+									.attr("y", y - tooltipGapY)
+									.attr("width", rectW)
+									.attr("height", tooltipGapY + rectH)
+
+								svg.append("foreignObject")
+									.attr("id", "tooltip")
+									.attr("x", x + rectW / 2 - tooltipBoxW / 2 + tooltipBoxPadding)
+									.attr("y", y - tooltipGapY - tooltipBoxH + tooltipBoxPadding)
+									.attr("width", tooltipBoxW - 2 * tooltipBoxPadding)
+									.attr("height", tooltipBoxH - 2 * tooltipBoxPadding)
+									.append("xhtml:div")
+									.attr("class", "textbox invisible")
+									.html(function() {
+										if (classIncludes(classTag, "deontological")) {
+											examples = ngrams[i].examples_d;
+											bClass = "deontological";
+										}
+										else if (classIncludes(classTag, "utilitarian")) {
+											examples = ngrams[i].examples_u;
+											bClass = "utilitarian";
+										}
+
+										res = "";
+										examples.forEach(function(ex) {
+											s = ex.text;
+											while (s.includes("<b>")) {
+												s = s.replace("<b>", "<b class=\"" + bClass + "\">");
+											}
+											res += "<p class=\"text\">" + s + "</p>";
+											res += "<p class=\"source\">- " + ex.person + " (" + ex.date + ")</p>"; 
+											if (examples[examples.length - 1] != ex) {
+												res += "<p class=\"gap\">\n</p>";
+											}
+										});
+										return res;
+									})
+									.transition()
+									.delay(textTransition)
+									.attr("class", "textbox");
+							})
+							.on("mouseout", function() {
+								d3.select(this).attr("id", null);
+							})
+
+				}
+					
+				// Bar labels
+				svg.append("g")
+					.attr("id", "bar-labels")
+					.selectAll("text")
+					.data(ngrams)
+					.enter()
+					.append("text")
+					.attr("class", "row-plot")
+					.attr("text-anchor", function(d) {
+						if (d.pct_d >= d.pct_u) {
+							return "end";
+						}
+						else {
+							return "start";
+						}
+					})
+					.attr("dominant-baseline", "central")
+					.attr("x", function(d) {
+						if (d.pct_d >= d.pct_u) {
+							return xScale(-d.pct_d) - figBarLabelGapX;
+						}
+						else {
+							return xScale(d.pct_u) + figBarLabelGapX;
+						}
+					})
+					.attr("y", function(d, i) {
+						return yScale(i) + (yScale(1) - yScale(0)) / 2;
+					})
+					.text(function(d) {
+						return d.ngram;
+					});
+
+
+			})
+			.catch(function(err) {
+				console.log(err);
+			})
+
+			skel.raise();
+
+		</script>
+	</body>
+</html>
