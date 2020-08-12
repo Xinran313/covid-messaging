@@ -1,11 +1,12 @@
-body {
+* {
+	margin: 0px;
 	padding: 0px;
 }	
 
  /* Navbar container */
 .my-navbar {
   overflow: hidden;
-  background-color: #333;
+  background-color: #444444;
   font-family: Arial;
 }
 
